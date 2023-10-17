@@ -1,0 +1,7 @@
+.html_main {
+  position: fixed;
+  top: 20px;
+  height: calc(100vh - 20px);
+  width: 100%;
+  overflow-y: auto;
+}

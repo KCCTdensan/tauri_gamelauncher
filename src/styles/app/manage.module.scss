@@ -1,0 +1,23 @@
+@import "../global/responsive.scss";
+@import "../global/variable.scss";
+
+.field {
+  margin: 5rem auto 3rem auto;
+  width: min(90rem, 100%);
+  padding: 0;
+  justify-content: center;
+  display: block;
+
+
+
+}
+
+.title {
+  text-align: center;
+  width: 95%;
+  margin: 0 auto;
+  margin-top: 5rem;
+  border-style: solid;
+  border-width: 0 0 .15rem 0;
+  border-color: rgb(9, 180, 163);
+}
