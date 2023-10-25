@@ -1,2 +1,283 @@
 @import "../global/responsive.scss";
 @import "../global/variable.scss";
+
+.box {
+  position: relative;
+  width: 95%;
+  height: 4rem;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: .2rem .2rem .5rem rgb(224, 224, 224);
+  border-radius: .5rem;
+  border-style: solid;
+  border-width: .1rem;
+  border-color: rgb(201, 201, 201);
+  overflow: hidden;
+
+  &.expanded {
+    height: 60rem;
+  }
+
+  .check {
+    position: absolute;
+    z-index: 1000;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    &::before {
+      content: "";
+      display: block;
+      z-index: 100;
+      background-color: #fff;
+      border-radius: .2rem;
+      border: 1px solid rgb(201, 201, 201);
+      width: 1.3rem;
+      height: 1.3rem;
+      transform: translateY(-.65rem) translateX(-.65rem);
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+    }
+
+    &::after {
+      content: "";
+      display: block;
+      z-index: 1000;
+      position: absolute;
+      color: black;
+      top: 2rem;
+      left: 2rem;
+      border-bottom: 3px solid rgb(9, 180, 163);
+      border-left: 3px solid rgb(9, 180, 163);
+      opacity: .25;
+      height: 6px;
+      width: 11px;
+      transform: rotate(-45deg) translateY(-.4rem) translateX(0rem);
+    }
+
+    &:hover::after,
+    &:focus:after {
+      opacity: 1;
+    }
+
+    &:checked::before {
+      background-color: rgb(9, 180, 163);
+    }
+
+    &:checked::after {
+      opacity: 1;
+      border-color: white;
+    }
+  }
+
+  .checkbox {
+    display: block;
+    top: 0;
+    left: 0;
+    z-index: 105;
+    cursor: pointer;
+    width: 4rem;
+    height: 4rem;
+    position: absolute;
+    background-color: white;
+    border-style: solid;
+    border-width: .1rem;
+    border-color: rgb(224, 224, 224);
+  }
+
+  .id_box {
+    position: absolute;
+    left: 4.1rem;
+    top: 0;
+    text-align: left;
+    font-size: .8rem;
+    background-color: rgb(9, 180, 163);
+    color: white;
+    padding: .15rem 1rem .15rem .5rem;
+    border-radius: 0 0 .5rem 0;
+  }
+
+  .title {
+    position: absolute;
+    left: 24rem;
+    top: .7rem;
+    font-size: 1.6rem;
+    font-weight: bold;
+  }
+
+  .author {
+    position: absolute;
+    left: 24rem;
+    top: 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  .modify {
+    display: block;
+    cursor: pointer;
+    position: absolute;
+    right: 3.1rem;
+    top: 0;
+    width: 3rem;
+    height: 4rem;
+    color: black;
+    border: .1rem solid rgb(201, 201, 201);
+    font-size: 1.6rem;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+
+    &.active {
+      background-color: rgb(9, 180, 163);
+    }
+
+    .active {
+      color: white;
+    }
+  }
+
+  .delete {
+    display: block;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 3rem;
+    height: 4rem;
+    color: black;
+    border: .1rem solid rgb(201, 201, 201);
+    font-size: 1.6rem;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+
+    &.active {
+      background-color: rgb(9, 180, 163);
+    }
+
+    .active {
+      color: white;
+    }
+  }
+
+  .modify_field {
+    position: absolute;
+    left: 0;
+    top: 5rem;
+    width: calc(100% - 4rem);
+
+    &>div {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+
+      .label {
+        display: inline-block;
+        width: 5.5rem;
+        text-align: right;
+        font-weight: bold;
+        margin-right: 1rem;
+        margin-bottom: .2rem;
+        // white-space: nowrap;
+      }
+
+      .option {
+        width: 100%;
+        display:inline-flex;
+        text-overflow:ellipsis;
+        overflow-x: hidden;
+        white-space: nowrap;
+      }
+
+      .images {
+        margin: 1rem 0;
+        background-color: rgb(195, 245, 245);
+        width: 100%;
+        height: 6.5rem;
+        overflow: hidden;
+
+        .image {
+          display: inline-block;
+          width: calc(100% / 3);
+          height: 100%;
+          overflow: hidden;
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+
+      button {
+        cursor: pointer;
+        appearance: none;
+        background-color: rgb(250, 250, 250);
+        border-width: .15rem;
+        border-color: rgb(9, 180, 163);
+        border-style: solid;
+        outline: none;
+        width: 7rem;
+        height: 1.8rem;
+        
+        &:hover {
+          box-shadow: .2rem .2rem .5rem rgb(224, 224, 224);
+        }
+
+        &.short {
+          background-color: rgb(9, 180, 163);
+          color: white;
+          width: 3.5rem;
+        }
+      }
+
+      input {
+        appearance: none;
+        background-color: rgb(250, 250, 250);
+        border-width: 0 0 .15rem 0;
+        outline: none;
+        padding: .1rem .5rem 0 .5rem;
+        border-radius: .3rem .3rem 0 0;
+        width: calc(100% - 8rem);
+
+        &:active,
+        &:focus {
+          border-color: rgb(9, 180, 163);
+        }
+
+        button {
+          display: none;
+        }
+      }
+
+      textarea {
+        resize: none;
+        appearance: none;
+        background-color: rgb(250, 250, 250);
+        border-width: 0 0 .15rem 0;
+        outline: none;
+        padding: .1rem .5rem 0 .5rem;
+        border-radius: .3rem .3rem 0 0;
+        width: calc(100% - 8rem);
+        overflow-y: scroll;
+
+        &:active,
+        &:focus {
+          border-color: rgb(9, 180, 163);
+        }
+      }
+    }
+  }
+}

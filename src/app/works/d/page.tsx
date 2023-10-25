@@ -1,75 +1,72 @@
 "use client";
 
-import works from "@/jsons/works.json"
-import * as React from 'react'
+import { useSearchParams } from "next/navigation";
+import React, { useState, useEffect } from 'react'
 import styles from '@/styles/app/detail.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { jsonDirectoryPath, jsonFilePath } from '@/components/Global/constants'
+import { invoke } from '@tauri-apps/api/tauri'
+import { convertFileSrc } from '@tauri-apps/api/tauri';
+import Work from '@/components/WorkInterface'
 
-interface Tag {
-  name: string
-}
+export default function Work() {
+  const [workJson, setWorkJson] = useState<Work | null>(null)
+  const [workFolder, setWorkFolder] = useState<string>()
+  const searchParams = useSearchParams();
 
-export default class Work extends React.Component {
-  guid: string
-  name: string
-  author: string
-  description: string
-  tags: Tag[]
-
-  constructor(props: any) {
-    super(props)
-
-    this.guid = "null"
-    this.name = "null"
-    this.author = "null"
-    this.description = "null"
-    this.tags = []
-
-    this.state = {
-      found: false
-    }
-  }
-
-  componentDidMount() {
-    const searchParams = new URLSearchParams(window.location.search)
+  useEffect(()=>{
     const id = searchParams.get('id')
 
-    if (id) {
-      const matchedObject = works.find(item => item.guid === id);
+    const setup = async () => {
+      try {
 
-      if (matchedObject) {
-        this.guid = matchedObject.guid
-        this.name = matchedObject.name
-        this.author = matchedObject.author
-        this.description = matchedObject.description
-        this.tags = matchedObject.tags
+        const res = await invoke('get_user_document_directory')
+        const worksPath = res as string + jsonDirectoryPath + jsonFilePath
+        setWorkFolder(res as string)
+        const jsonRes = await invoke('read_json_file', { filePath: worksPath })
+        const worksData = jsonRes as Work[]
 
-        this.setState({
-          found: true
-        })
+        if (id) {
+          const matchedObject = worksData.find(item => item.guid === id);
+    
+          if (matchedObject) {
+            const mWork: Work = matchedObject
+            setWorkJson(mWork)
+          }
+        }
+
+      } catch (error) {
+        console.error("Error", error)
       }
     }
-  }
 
-  render(): React.ReactNode {
+    setup()
+  },[])
 
-    return (
-      <>
-        <h1 className={styles.title}>{this.name}</h1>
-        <div className={styles.field}>
-          <div className={styles.thumbnail}>
-            thumbnail
-          </div>
-          <div className={styles.author}>
-            <FontAwesomeIcon icon={faUser} className={styles.icon} />{this.author}
-          </div>
-          <div className={styles.click}><p>Launch</p></div>
-          <div className={styles.description}>
-            {this.description}
-          </div>
+  console.log("PATH:"+workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid  + workJson?.thumbnail)
+
+  return (
+    <>
+      <h1 className={styles.title}>{workJson?.name}</h1>
+      <div className={styles.field}>
+        <div className={styles.thumbnail}>
+        {workJson?.thumbnail !== "" ?
+              (<img
+                src={convertFileSrc(workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid  + workJson?.thumbnail)}
+                alt='thumbnail'>
+              </img>) : ""
+            }
         </div>
-      </>
-    )
-  }
+        <div className={styles.author}>
+          <FontAwesomeIcon icon={faUser} className={styles.icon} />{workJson?.author}
+        </div>
+        <div className={styles.click}><p>Launch</p></div>
+        <div className={styles.description}>
+          {workJson?.description}
+        </div>
+      </div>
+    </>
+  )
+
 }

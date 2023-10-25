@@ -7,9 +7,51 @@
   padding: 0;
   justify-content: center;
   display: block;
+  position: relative;
+}
 
+.tool_bar {
+  width: calc(min(90rem, 95%) * .95);
+  height: 2rem;
+  background-color: white;
+  position: fixed;
+  padding: .25rem;
+  top: 10rem;
+  left: calc((100vw - min(90rem, 95%) * .95) / 2);
+  z-index: 2000;
+  border-radius: .5rem;
+  border: solid .1rem rgb(201, 201, 201);
+  box-shadow: .2rem .2rem .5rem rgb(224, 224, 224);
+  display: flex;
+  justify-content: space-between;
 
+  &>div {
+    display: flex;
 
+    .icon {
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+      border: none;
+      border-radius: .3rem;
+      width: 2rem;
+      height: 2rem;
+      margin: 0 .25rem;
+      position: relative;
+      background-color: white;
+      font-size: 1.3rem;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      flex-direction: column;
+      box-shadow: none;
+
+      &:hover {
+        box-shadow: .2rem .2rem .5rem rgb(224, 224, 224);
+      }
+    }
+  }
 }
 
 .title {
@@ -20,4 +62,77 @@
   border-style: solid;
   border-width: 0 0 .15rem 0;
   border-color: rgb(9, 180, 163);
+}
+
+.cbox {
+  position: absolute;
+  width: 4rem;
+  left: calc(2.5%);
+  z-index: 1000;
+  height: 4rem;
+  border-radius: .5rem 0 0 .5rem;
+  border-style: solid;
+  border-width: .1rem;
+  border-color: rgb(201, 201, 201);
+  overflow: hidden;
+
+  .check {
+    position: absolute;
+    z-index: 1000;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    &::before {
+      content: "";
+      display: block;
+      z-index: 100;
+      background-color: #fff;
+      border-radius: .2rem;
+      border: 1px solid rgb(201, 201, 201);
+      width: 1.3rem;
+      height: 1.3rem;
+      transform: translateY(-.65rem) translateX(-.65rem);
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+    }
+
+    &::after {
+      content: "";
+      display: block;
+      z-index: 1000;
+      position: absolute;
+      color: black;
+      top: 2rem;
+      left: 2rem;
+      border-bottom: 3px solid rgb(9, 180, 163);
+      border-left: 3px solid rgb(9, 180, 163);
+      opacity: .25;
+      height: 6px;
+      width: 11px;
+      transform: rotate(-45deg) translateY(-.4rem) translateX(0rem);
+    }
+
+    &:hover::after,
+    &:focus:after {
+      opacity: 1;
+    }
+
+    &:checked::before {
+      background-color: rgb(9, 180, 163);
+    }
+
+    &:checked::after {
+      opacity: 1;
+      border-color: white;
+    }
+  }
 }

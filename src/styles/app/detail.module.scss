@@ -23,9 +23,13 @@
 
   .thumbnail {
     width: min(40rem, 90vw);
-    height: min(22.5rem, 50.625vw);
-    background-color: aqua;
+    max-height: min(71.1rem, 160vw);
+    overflow: hidden;
     margin: 0 auto;
+
+    img {
+      width: 100%;
+    }
   }
 
   .author {
