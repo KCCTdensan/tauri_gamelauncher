@@ -17,10 +17,10 @@ type Props = {
   addCheckFunction: Function
   removeCheckFunction: Function
   addModifyingFunction: Function
-  removeModifyingFunction: Function
+  // removeModifyingFunction: Function
 }
 
-export default function WorkList({ work, updatingFunction, deletingFunction, addCheckFunction, removeCheckFunction, addModifyingFunction, removeModifyingFunction }: Props) {
+export default function WorkList({ work, updatingFunction, deletingFunction, addCheckFunction, removeCheckFunction, addModifyingFunction }: Props) {
   const [isModifying, setIsModifying] = useState<boolean>(false)
   // const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [currentWork, setCurrentWork] = useState<Work>(work)
@@ -176,7 +176,7 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
       <div className={styles.author}>{work.author}</div>
       <div className={`${isModifying ? styles.active : ''} ${styles.modify}`}
         onClick={!isModifying ?
-          () => { setIsModifying(!isModifying) } :
+          () => { setIsModifying(!isModifying); addModifyingFunction() } :
           () => { updatingFunction(currentWork.guid, currentWork); setIsModifying(!isModifying) }}>
         <FontAwesomeIcon className={`${isModifying ? styles.active : ''}`} icon={faPencil} /></div>
       {/* <div className={`${isDeleting ? styles.active : ''} ${styles.delete}`} */}

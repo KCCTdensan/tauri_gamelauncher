@@ -2,15 +2,80 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use serde_json::Value;
 use std::fs;
-use std::fs::File;
-// use std::io::prelude::*;
+use std::fs::{DirEntry, File};
 use std::io::BufReader;
 use std::io::Read;
-use std::io::Write;
+use std::io::{self, Write};
 use std::path::Path;
+use std::process::Command;
 use tauri::Manager;
+use walkdir::WalkDir;
 use window_shadows::set_shadow;
 use zip::read::ZipArchive;
+use zip::{write::FileOptions, ZipWriter};
+
+#[tauri::command]
+fn open_file(file_path: &str) -> Result<String, String> {
+    let original = "start *filepath*";
+    let search_str = "*filepath*";
+    let replace_str = file_path;
+    let mut modified_string = original.to_string();
+
+    modified_string = modified_string.replace(search_str, replace_str);
+    let final_result: &str = &modified_string;
+
+    println!("{}",final_result);
+
+    // let result = std::process::Command::new("cmd")
+    //     .args(&["/C", final_result])
+    //     .output();
+
+    let result = std::process::Command::new("cmd")
+    .arg("/C")
+    .arg(final_result)
+    .output();
+
+    // let result = std::process::Command::new("start")
+    //     .args(&["\"\"", file_path])
+    //     .output();
+
+    match result {
+        Ok(_) => Ok("Done".to_string()),
+        Err(err) => Err(err.to_string()),
+    }
+}
+
+fn add_folder_contents_to_zip<W: Write + std::io::Seek>(
+    folder: &Path,
+    mut zip: ZipWriter<W>,
+) -> io::Result<ZipWriter<W>> {
+    for entry in WalkDir::new(folder) {
+        let entry = entry?;
+        let path = entry.path();
+
+        if path.is_file() {
+            let relative_path = path.strip_prefix(folder).unwrap();
+            zip.start_file(relative_path.to_string_lossy(), Default::default())?;
+            let mut file = File::open(path)?;
+            io::copy(&mut file, &mut zip)?;
+        }
+    }
+
+    Ok(zip)
+}
+
+#[tauri::command]
+fn compress_folder(folder_path: &str, zip_path: &str) -> Result<(), String> {
+    let file = File::create(zip_path).map_err(|err| err.to_string())?;
+    let writer = io::BufWriter::new(file);
+    let mut zip = ZipWriter::new(writer);
+
+    let folder = Path::new(folder_path);
+
+    zip = add_folder_contents_to_zip(folder, zip).map_err(|err| err.to_string())?;
+
+    Ok(())
+}
 
 #[tauri::command]
 fn get_user_document_directory() -> Result<String, String> {
@@ -40,7 +105,14 @@ fn upload_thumbnail_to_folder(file_path: String, dir_path: String) -> Result<Str
     };
 
     // 画像の拡張子を許可する場合
-    if file_extension == "jpg" || file_extension == "png" || file_extension == "gif" || file_extension == "webp" || file_extension == "svg" || file_extension == "bmp" || file_extension == "tiff" {
+    if file_extension == "jpg"
+        || file_extension == "png"
+        || file_extension == "gif"
+        || file_extension == "webp"
+        || file_extension == "svg"
+        || file_extension == "bmp"
+        || file_extension == "tiff"
+    {
         // 画像のディレクトリパス
         let image_dir: String = dir_path;
 
@@ -129,7 +201,9 @@ fn main() {
             read_json_file,
             save_json_file,
             upload_main_directory,
-            upload_thumbnail_to_folder
+            upload_thumbnail_to_folder,
+            compress_folder,
+            open_file
         ])
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();

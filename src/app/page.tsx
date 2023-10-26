@@ -2,26 +2,12 @@
 
 import Image from 'next/image'
 import styles from '@/styles/app/page.module.scss'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link'
 import WorkCard from '@/components/Work/WorkCard'
 import { invoke } from '@tauri-apps/api/tauri';
 import { open } from '@tauri-apps/api/dialog';
-
-interface Tag {
-  name: string
-}
-
-interface Work {
-  name: string,
-  author: string,
-  description: string,
-  thumbnail: string,
-  guid: string,
-  tags: Tag[]
-}
-
-
+import Work from '@/components/WorkInterface'
 
 export default function Home() {
   const [randomData, setRandomData] = useState<Work | null>({
@@ -29,7 +15,10 @@ export default function Home() {
     author: "string",
     description: "string",
     thumbnail: "string",
+    targetFile: "string",
     guid: "string",
+    url: "string",
+    pics: [],
     tags: []
   });
   // setRandomData(works[Math.floor(Math.random() * works.length)])
@@ -80,15 +69,16 @@ export default function Home() {
       })
   }
 
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
     if (!opened)
       window.setTimeout(openFile, 10)
-  }
+  })
+
 
   return (
     <div className={styles.field}>
       <div className={styles.movie} onClick={openFile}>
-        <p>ようこそ！電算部へ！</p>
+        <img src="/home_header.png" alt='d3bu_header' />
       </div>
       <div className={styles.random}>
         <p className={styles.section_name}>Randomに遊びたい！</p>

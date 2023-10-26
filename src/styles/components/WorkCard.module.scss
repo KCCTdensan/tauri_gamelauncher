@@ -103,32 +103,41 @@
       overflow-y: scroll;
     }
 
-    .tags {
-      margin: 0;
-      padding: .4rem;
-      display: flex;
+    .tags_box {
+      // overflow-y: auto;
+      // overflow-x:initial;
+      // width: 100%;
+      .tags {
+        margin: 0;
+        padding: .4rem;
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
 
-      .tag {
-        list-style: none;
-        color: black;
-        margin-right: .2rem;
-
-        &::before {
-          content: "#";
-          color: white;
-          font-weight: bold;
-          font-size: 1rem;
-          padding: 0;
+        .tag {
+          list-style: none;
+          color: black;
           margin-right: .2rem;
-          display: inline-block;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          font-weight: bold;
-          width: 1.2rem;
-          height: 1.2rem;
-          border-radius: .2rem;
-          background-color: rgb(9, 180, 163);
+          display: block;
+          margin-bottom: .2rem;
+
+          &::before {
+            content: "#";
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            padding: 0;
+            margin-right: .2rem;
+            display: inline-block;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: .2rem;
+            background-color: rgb(9, 180, 163);
+          }
         }
       }
     }

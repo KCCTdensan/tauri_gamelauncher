@@ -26,6 +26,22 @@ export default function Manage() {
     tags: []
   }
 
+  const saveDirectory = async () => {
+    const res = await invoke('get_user_document_directory')
+    const worksPath = res as string + jsonDirectoryPath
+    invoke('compress_folder', {
+      folderPath: worksPath,
+      zipPath: res + "\\save.zip"
+    })
+      .catch((e) => {
+        console.error(e)
+      })
+  }
+
+  const addModifyingWork = () => {
+    setIsChanged(true)
+  }
+
   const addCheckingWork = (guid: string) => {
     // console.log("add:" + guid)
     if (!checkingWorks.includes(guid)) {
@@ -59,7 +75,9 @@ export default function Manage() {
 
     // 各チェックボックスの状態をクリア
     checkboxes.forEach((checkbox) => {
-      checkbox.checked = false;
+      if (checkbox instanceof HTMLInputElement) {
+        checkbox.checked = false;
+      }
     });
 
     setWorksJsonData(jsonData)
@@ -82,7 +100,9 @@ export default function Manage() {
 
     // 各チェックボックスの状態をクリア
     checkboxes.forEach((checkbox) => {
-      checkbox.checked = false;
+      if (checkbox instanceof HTMLInputElement) {
+        checkbox.checked = false;
+      }
     });
   }
 
@@ -107,7 +127,10 @@ export default function Manage() {
       const worksPath = res as string + jsonDirectoryPath + jsonFilePath
 
       invoke('save_json_file', { filePath: worksPath, data: worksJsonData })
-        .then(() => console.log("SAVED")).catch((e) => console.error(e))
+        .then(() => {
+          console.log("SAVED")
+          setIsChanged(false)
+        }).catch((e) => console.error(e))
     }).catch((e) => console.error(e))
   }
 
@@ -119,6 +142,7 @@ export default function Manage() {
       ...worksJsonData,
       newWork]
     setWorksJsonData(updatedArr)
+    setIsChanged(true)
   }
 
   useEffect(() => {
@@ -137,20 +161,21 @@ export default function Manage() {
     setup()
   }, [])
 
-  // console.log(checkingWorks)
+  console.log(isChanged)
 
   return (
-    <>
+    <div className={`${styles.backfield} ${isChanged ? styles.active : ""}`}>
       <h1 className={styles.title}>登録作品管理</h1>
       <div className={styles.tool_bar}>
         <div>
           <button className={styles.icon}><FontAwesomeIcon icon={faFilter} /></button>
           <button className={styles.icon}><FontAwesomeIcon icon={faAngleUp} /></button>
           <button className={styles.icon}><FontAwesomeIcon icon={faAngleDown} /></button>
-          <button onClick={saveArr} className={styles.icon}><FontAwesomeIcon icon={faFloppyDisk} /></button>
+          <button onClick={saveArr}
+            className={`${styles.icon} ${isChanged ? styles.active : ""}`}><FontAwesomeIcon icon={faFloppyDisk} /></button>
         </div>
         <div>
-          <button className={styles.icon}><FontAwesomeIcon icon={faDownload} /></button>
+          <button onClick={saveDirectory} className={styles.icon}><FontAwesomeIcon icon={faDownload} /></button>
           <button className={styles.icon}><FontAwesomeIcon icon={faFileExport} /></button>
           {/* <button disabled className={styles.icon}><FontAwesomeIcon icon={faEyeSlash} /></button> */}
           {/* <button disabled className={styles.icon}><FontAwesomeIcon icon={faEye} /></button> */}
@@ -164,10 +189,20 @@ export default function Manage() {
           {worksJsonData.map((e, i) => (
             <div key={i}>
               <div className={styles.cbox}>
-                <input key={i} onClick={() => { checkingWorks.includes(e.guid) ? removeCheckingWork(e.guid) : addCheckingWork(e.guid) }} id={"checkbox" + e.guid} type='checkbox' className={styles.check} />
+                <input key={i}
+                  onClick={
+                    () => {
+                      checkingWorks.includes(e.guid) ?
+                        removeCheckingWork(e.guid) :
+                        addCheckingWork(e.guid)
+                    }}
+                  id={"checkbox" + e.guid}
+                  type='checkbox'
+                  className={styles.check} />
                 <label htmlFor={"checkbox" + e.guid} className={styles.checkbox} />
               </div>
               <WorkList
+              addModifyingFunction={addModifyingWork}
                 addCheckFunction={addCheckingWork}
                 removeCheckFunction={removeCheckingWork}
                 deletingFunction={deleteWork}
@@ -177,6 +212,6 @@ export default function Manage() {
           ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }

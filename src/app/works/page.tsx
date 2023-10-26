@@ -12,6 +12,7 @@ import SearchField from '@/components/Widgets/SearchField'
 export default function WorksList() {
 
   const [worksJsonData, setWorksJsonData] = useState<Work[]>([])
+  const [searchResults, setSearchResult] = useState<Work[]>(worksJsonData);
 
   useEffect(() => {
     const setup = async () => {
@@ -21,6 +22,7 @@ export default function WorksList() {
         const jsonRes = await invoke('read_json_file', { filePath: worksPath })
         const worksData = jsonRes as Work[]
         setWorksJsonData(worksData)
+        setSearchResult(worksData)
       } catch (error) {
         console.error("Error", error)
       }
@@ -29,15 +31,22 @@ export default function WorksList() {
     setup()
   }, [])
 
+  const SetInputResult = (input: string) => {
+    if (input == "")
+      setSearchResult(worksJsonData)
+    else
+      setSearchResult(worksJsonData.filter(item => item.name.toLowerCase().includes(input)))
+  }
+
   return (
     <>
       <h1 className={styles.title}>作品一覧</h1>
       <div className={styles.tab}>
         <button className={styles.tag_sort}>#タグ検索</button>
-        <SearchField />
+        <SearchField setSearchResultFunction={SetInputResult} />
       </div>
       <div className={styles.works}>
-        {worksJsonData.map((e, i) => {
+        {searchResults.map((e, i) => {
           return (
             <li key={i}><WorkCard key={i} workData={e} /></li>
           )

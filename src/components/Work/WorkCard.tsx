@@ -45,12 +45,19 @@ export default function WorkCard({ workData }: Props) {
     setup()
   }, [workData.guid])
 
+  const launchWork = () => {
+    console.log(workFolder + workData?.targetFile)
+    invoke('open_file', { filePath: workFolder + workData?.targetFile })
+      .then((res) => console.log(res))
+      .catch((e) => console.error(e))
+  }
+
   return (
     <div>
       <Link href={"/works/d?id=" + workData.guid} className={styles.link}>
         <div className={styles.card}>
           <div className={styles.author}><FontAwesomeIcon icon={faUser} className={styles.icon} />{workData.author}</div>
-          <div className={styles.click}>Quick Launch</div> {/* この要素にclient要素をclick時に動作 */}
+          <div onClick={launchWork} className={styles.click}>Quick Launch</div> {/* この要素にclient要素をclick時に動作 */}
           <div className={styles.thumbnail}>
             {workData.thumbnail !== "" ?
               (<img
@@ -61,7 +68,7 @@ export default function WorkCard({ workData }: Props) {
           </div>
           <div className={styles.title}>{workData.name}</div>
           <div className={styles.description}>{workData.description}</div>
-          <div>
+          <div className={styles.tags_box}>
             <ul className={styles.tags}>
               {workData.tags.map((e, i) => (
                 <li key={i} className={styles.tag}>{e.name}</li>

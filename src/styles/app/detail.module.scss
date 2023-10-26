@@ -28,6 +28,8 @@
     margin: 0 auto;
 
     img {
+      user-select: none;
+      pointer-events: none;
       width: 100%;
     }
   }
@@ -47,6 +49,42 @@
       display: inline-block;
       margin-right: .5rem;
       width: .8rem;
+    }
+  }
+
+  .website {
+    background-color: rgb(9, 180, 163);
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    // width: 10rem;
+    color: white;
+    padding: .3rem .8rem;
+    font-weight: bold;
+    border-radius: 1rem;
+    padding-left: 1rem;
+
+    .icon {
+      display: inline-block;
+      margin-right: .5rem;
+      width: .8rem;
+      font-size: 1.2rem;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+    }
+
+
+    div {
+      display: block;
+      width: 4rem;
+      height: 4rem;
+      // background-color: white;
+      padding: .5rem;
+      svg {
+        color: white;
+      }
     }
   }
 
@@ -81,5 +119,58 @@
     padding: 1rem .5rem;
     width: 100%;
     margin: 0 auto;
+  }
+
+  .pics {
+    user-select: none;
+    margin-top: 2rem;
+
+    .pic {
+      user-select: none;
+      pointer-events: none;
+      width: 95%;
+      overflow: hidden;
+      border-radius: 1rem;
+      margin: 1rem auto;
+
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+  .tags {
+    user-select: none;
+    margin: 0;
+    padding: .4rem;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+
+    .tag {
+      list-style: none;
+      color: black;
+      margin-right: .2rem;
+      display: block;
+      margin-bottom: .2rem;
+
+      &::before {
+        content: "#";
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        padding: 0;
+        margin-right: .2rem;
+        display: inline-block;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-weight: bold;
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: .2rem;
+        background-color: rgb(9, 180, 163);
+      }
+    }
   }
 }
