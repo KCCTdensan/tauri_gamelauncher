@@ -8,11 +8,15 @@
   },
   "package": {
     "productName": "Game Launcher",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": true,
+      "protocol": {
+        "asset": true,
+        "assetScope": [ "**" ]
+      }
     },
     "bundle": {
       "active": true,
@@ -29,7 +33,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.kcctd3bu.dev",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -48,13 +52,14 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false
     },
     "windows": [
       {
+        "decorations": false,
         "fullscreen": false,
         "height": 600,
         "resizable": true,

@@ -1,95 +1,102 @@
+'use client'
+
 import Image from 'next/image'
-import styles from './page.module.css'
+import styles from '@/styles/app/page.module.scss'
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link'
+import WorkCard from '@/components/Work/WorkCard'
+import { invoke } from '@tauri-apps/api/tauri';
+import { open } from '@tauri-apps/api/dialog';
+import Work from '@/components/WorkInterface'
 
 export default function Home() {
+  const [randomData, setRandomData] = useState<Work | null>({
+    name: "string",
+    author: "string",
+    description: "string",
+    thumbnail: "string",
+    targetFile: "string",
+    guid: "string",
+    url: "string",
+    pics: [],
+    tags: []
+  });
+  // setRandomData(works[Math.floor(Math.random() * works.length)])
+  // setRandomData(works[Math.floor(Math.random() * works.length)])
+
+  // const [randomData, setRandomData] = useState<Work>()
+  const [opened, setOpened] = useState<boolean>(false)
+
+  // let randomData: Work = works[Math.floor(Math.random() * works.length)]
+  // setRandomData(works[Math.floor(Math.random() * works.length)])
+
+  // console.log(randomData)
+
+  let worksPath: string = ""
+  let worksJsonData: Work[] = []
+
+  async function setRandomWork(w: Work[]) {
+    // randomData = w[Math.floor(Math.random() * w.length)]
+    setRandomData(w[Math.floor(Math.random() * w.length)])
+  }
+
+  async function openFile() {
+    console.log("OPEN:" + worksPath)
+
+    invoke('read_json_file', {
+      filePath: worksPath
+    }).then((res) => {
+      console.log("OpenSuccess")
+      console.log(res)
+      worksJsonData = res as Work[]
+      setOpened(true)
+      setRandomWork(worksJsonData)
+    })
+      .catch((e) => {
+        console.log("Error")
+        console.log(e)
+      })
+  }
+
+  useEffect(() => {
+    invoke('get_user_document_directory')
+    .then((res) => {
+      console.log(res)
+      worksPath = res as string + "\\KCCTGameLauncher\\works.json"
+      console.log("w_path:" + worksPath)
+
+      invoke('initialize_json',{
+        dirPath: res as string+ "\\KCCTGameLauncher",
+        fileName: "works.json"
+      })
+    }).catch((e) => {
+      console.log("Error")
+      console.log(e)
+    })
+
+    if (!opened)
+      window.setTimeout(openFile, 10)
+  })
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div className={styles.field}>
+      <div className={styles.movie}>
+        <img src="/home_header.png" alt='d3bu_header' />
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className={styles.random}>
+        <p className={styles.section_name}>Randomに遊びたい！</p>
+        <WorkCard workData={randomData as Work} />
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className={styles.works_link}>
+        <p className={styles.section_name}>作品一覧はどこ？</p>
+        <Link href="/works/" className={styles.link}><div className={styles.link_box}>こちら</div></Link>
+        <Link href="/manage/" className={styles.link}><div className={styles.link_text}>作品を管理</div></Link>
       </div>
-    </main>
+      <div className={styles.ranking}>
+        <p className={styles.section_name}>よく起動されたもの</p>
+
+      </div>
+    </div>
   )
 }
