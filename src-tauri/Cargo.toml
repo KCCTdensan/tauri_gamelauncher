@@ -1,9 +1,9 @@
 [package]
-name = "app"
-version = "0.1.0"
-description = "A Tauri App"
+name = "Game Launcher"
+version = "0.9.0"
+description = "d3bu's Game Launcher"
 authors = ["you"]
-license = ""
+license = "MIT"
 repository = ""
 default-run = "app"
 edition = "2021"

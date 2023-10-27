@@ -35,17 +35,6 @@ export default function Home() {
   let worksPath: string = ""
   let worksJsonData: Work[] = []
 
-  invoke('get_user_document_directory')
-    .then((res) => {
-      console.log(res)
-      worksPath = res as string + "\\KCCTGameLauncher\\works.json"
-      console.log("w_path:" + worksPath)
-    }).catch((e) => {
-      console.log("Error")
-      console.log(e)
-    })
-
-
   async function setRandomWork(w: Work[]) {
     // randomData = w[Math.floor(Math.random() * w.length)]
     setRandomData(w[Math.floor(Math.random() * w.length)])
@@ -70,6 +59,21 @@ export default function Home() {
   }
 
   useEffect(() => {
+    invoke('get_user_document_directory')
+    .then((res) => {
+      console.log(res)
+      worksPath = res as string + "\\KCCTGameLauncher\\works.json"
+      console.log("w_path:" + worksPath)
+
+      invoke('initialize_json',{
+        dirPath: res as string+ "\\KCCTGameLauncher",
+        fileName: "works.json"
+      })
+    }).catch((e) => {
+      console.log("Error")
+      console.log(e)
+    })
+
     if (!opened)
       window.setTimeout(openFile, 10)
   })
@@ -77,7 +81,7 @@ export default function Home() {
 
   return (
     <div className={styles.field}>
-      <div className={styles.movie} onClick={openFile}>
+      <div className={styles.movie}>
         <img src="/home_header.png" alt='d3bu_header' />
       </div>
       <div className={styles.random}>

@@ -1,54 +1,33 @@
 'use client'
 
-import { appWindow } from "@tauri-apps/api/window"
 import { X, Minus, Maximize, AlignHorizontalJustifyCenter } from 'lucide-react'
 import * as React from 'react'
 import styles from '@/styles/components/TitleBar.module.scss'
+import { useAppWindow, useMaximized } from '@/lib/hooks'
 
 export default function TitleBar() {
-  function minimize() {
-    if (typeof window !== 'undefined') {
-      appWindow.minimize()
-    }
-  }
-
-  async function maximize() {
-    if (typeof window !== 'undefined') {
-      let maximizeState = await appWindow.isMaximized()
-
-      if (!maximizeState) {
-        appWindow.maximize()
-      } else {
-        appWindow.unmaximize()
-      }
-    }
-  }
-
-  function hide() {
-    if (typeof window !== 'undefined') {
-      appWindow.hide()
-    }
-  }
+  const appWindow = useAppWindow()
+  const maximized = useMaximized()
 
   return (
     <header>
       <nav data-tauri-drag-region className={styles.nav} aria-label="Global">
         <div className={styles.app_icon}>
-          <AlignHorizontalJustifyCenter />
+          <img src="/d3bu_icon.png" />
         </div>
         <ul className={styles.icons}>
           <li>
-            <button onClick={minimize}>
+            <button onClick={() => appWindow?.minimize()}>
               <Minus size="16" />
             </button>
           </li>
           <li>
-            <button onClick={maximize}>
+            <button onClick={() => maximized ? appWindow?.unmaximize() : appWindow?.maximize()}>
               <Maximize size="16" />
             </button>
           </li>
           <li>
-            <button onClick={hide} className={styles.red}>
+            <button onClick={() => appWindow?.close()} className={styles.red}>
               <X size="16" />
             </button>
           </li>

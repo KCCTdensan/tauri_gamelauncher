@@ -31,19 +31,21 @@ type Props = {
 
 export default function WorkCard({ workData }: Props) {
   const [workFolder, setWorkFolder] = useState<string>()
+  const [thumbnailPath, setThumbnailPath] = useState<string>("")
   useEffect(() => {
     const setup = async () => {
       try {
         const res = await invoke('get_user_document_directory')
         const worksPath = res as string + jsonDirectoryPath + "\\" + workData.guid
         setWorkFolder(worksPath)
+        setThumbnailPath(convertFileSrc(worksPath as string + workData.thumbnail))
       } catch (error) {
         console.error("Error", error)
       }
     }
 
     setup()
-  }, [workData.guid])
+  }, [workData.guid, workData.thumbnail])
 
   const launchWork = () => {
     console.log(workFolder + workData?.targetFile)
@@ -57,11 +59,11 @@ export default function WorkCard({ workData }: Props) {
       <Link href={"/works/d?id=" + workData.guid} className={styles.link}>
         <div className={styles.card}>
           <div className={styles.author}><FontAwesomeIcon icon={faUser} className={styles.icon} />{workData.author}</div>
-          <div onClick={launchWork} className={styles.click}>Quick Launch</div> {/* この要素にclient要素をclick時に動作 */}
+          <div onClick={launchWork} className={styles.click}>Quick Launch</div>
           <div className={styles.thumbnail}>
             {workData.thumbnail !== "" ?
               (<img
-                src={convertFileSrc(workFolder as string + workData.thumbnail)}
+                src={thumbnailPath}
                 alt='thumbnail'>
               </img>) : ""
             }

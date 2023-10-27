@@ -15,6 +15,7 @@ import { QRCodeSVG } from 'qrcode.react';
 export default function Work() {
   const [workJson, setWorkJson] = useState<Work | null>(null)
   const [workFolder, setWorkFolder] = useState<string>("")
+  const [thumbnailPath, setThumbnailPath] = useState<string>("")
   const searchParams = useSearchParams();
 
   const launchWork = () => {
@@ -42,6 +43,7 @@ export default function Work() {
           if (matchedObject) {
             const mWork: Work = matchedObject
             setWorkJson(mWork)
+            setThumbnailPath(convertFileSrc(res as string + jsonDirectoryPath + "\\" + mWork.guid + mWork.thumbnail))
           }
         }
 
@@ -55,7 +57,7 @@ export default function Work() {
 
   console.log("PATH:" + workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + workJson?.thumbnail)
   // console.log(workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + e)
-
+  console.log(thumbnailPath)
   return (
     <>
       <h1 className={styles.title}>{workJson?.name}</h1>
@@ -63,7 +65,7 @@ export default function Work() {
         <div className={styles.thumbnail}>
           {workJson?.thumbnail !== "" ?
             (<img
-              src={convertFileSrc(workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + workJson?.thumbnail)}
+              src={thumbnailPath}
               alt='thumbnail'>
             </img>) : ""
           }
@@ -75,7 +77,7 @@ export default function Work() {
           <div className={styles.website}>
             <FontAwesomeIcon icon={faGlobe} className={styles.icon} />
             <Link target="_blank" rel="noopener noreferrer" href={workJson ? workJson?.url as string : "https://d3bu.net"}>{workJson?.url as string}</Link>
-            <div><QRCodeSVG value={workJson?.url as string} size={64} bgColor="rgb(9, 180, 163)" fgColor="#fff" /></div>
+            <div><QRCodeSVG value={workJson ? workJson?.url as string : "https://d3bu.net"} size={64} bgColor="rgb(9, 180, 163)" fgColor="#fff" /></div>
           </div> : <></>
         }
 
@@ -93,6 +95,7 @@ export default function Work() {
         </div>
         <div className={styles.pics}>
           {
+            workJson?.pics ?
             workJson?.pics.map((e, i) => (
               <div key={i} className={styles.pic}>
                 <img
@@ -100,7 +103,7 @@ export default function Work() {
                     workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + e.path
                   )} ></img>
               </div>
-            ))
+            ) ): <></>
           }
         </div>
       </div>

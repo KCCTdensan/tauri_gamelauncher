@@ -17,6 +17,7 @@
     "@tauri-apps/api": "^1.5.0",
     "@types/uuid": "^9.0.6",
     "install": "^0.13.0",
+    "jotai": "^2.5.0",
     "lucide-react": "^0.284.0",
     "next": "13.5.4",
     "normalize.css": "^8.0.1",

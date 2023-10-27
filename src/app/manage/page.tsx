@@ -6,7 +6,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 import WorkList from '@/components/Work/WorkItem'
 import Work from '@/components/WorkInterface'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter, faAngleUp, faAngleDown, faTrashCan, faPencil, faPlus, faEye, faEyeSlash, faFileExport, faDownload, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faFilter, faAngleUp, faAngleDown, faTrashCan, faPencil, faPlus, faEye, faEyeSlash, faFileExport, faDownload, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 import { jsonDirectoryPath, jsonFilePath } from '@/components/Global/constants'
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,6 +14,8 @@ export default function Manage() {
   const [worksJsonData, setWorksJsonData] = useState<Work[]>([])
   const [isChanged, setIsChanged] = useState<boolean>(false)
   const [checkingWorks, setCheckingWorks] = useState<string[]>([])
+  const [sortingGUID, setSortingGUID] = useState<string>("")
+  const [defaultWorks, setDefaultWorks] = useState<Work[]>([])
   const defWork: Work = {
     name: "(タイトル未設定)",
     author: "(制作者未設定)",
@@ -57,6 +59,66 @@ export default function Manage() {
     }
   }
 
+  const arrUp = () => {
+    let targetWorkGUID: string;
+    if (checkingWorks.length > 0)
+      targetWorkGUID = checkingWorks[0];
+    else if (sortingGUID !== "")
+      targetWorkGUID = sortingGUID
+    else return
+
+    const targetIndex = worksJsonData.findIndex(item => item.guid === targetWorkGUID);
+    if (targetIndex !== 0) {
+
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      setCheckingWorks([])
+      // 各チェックボックスの状態をクリア
+      checkboxes.forEach((checkbox) => {
+        if (checkbox instanceof HTMLInputElement) {
+          checkbox.checked = false;
+        }
+      });
+      setSortingGUID(targetWorkGUID)
+
+      let jsonData = [...worksJsonData]
+      jsonData.splice(targetIndex, 1)
+      jsonData.splice(targetIndex - 1, 0, worksJsonData[targetIndex])
+
+      setWorksJsonData(jsonData)
+      setIsChanged(true)
+    }
+  }
+
+  const arrDown = () => {
+    let targetWorkGUID: string;
+    if (checkingWorks.length > 0)
+      targetWorkGUID = checkingWorks[0];
+    else if (sortingGUID !== "")
+      targetWorkGUID = sortingGUID
+    else return
+
+    const targetIndex = worksJsonData.findIndex(item => item.guid === targetWorkGUID);
+    if (targetIndex !== worksJsonData.length - 1) {
+
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      setCheckingWorks([])
+      // 各チェックボックスの状態をクリア
+      checkboxes.forEach((checkbox) => {
+        if (checkbox instanceof HTMLInputElement) {
+          checkbox.checked = false;
+        }
+      });
+      setSortingGUID(targetWorkGUID)
+
+      let jsonData = [...worksJsonData]
+      jsonData.splice(targetIndex, 1)
+      jsonData.splice(targetIndex + 1, 0, worksJsonData[targetIndex])
+
+      setWorksJsonData(jsonData)
+      setIsChanged(true)
+    }
+  }
+
   const deleteCheckingWorks = () => {
     // console.log("DELETE")
     // console.log(checkingWorks)
@@ -72,7 +134,7 @@ export default function Manage() {
     })
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-
+    setCheckingWorks([])
     // 各チェックボックスの状態をクリア
     checkboxes.forEach((checkbox) => {
       if (checkbox instanceof HTMLInputElement) {
@@ -122,6 +184,22 @@ export default function Manage() {
     }
   }
 
+  const cancelArr = () => {
+    setCheckingWorks([])
+    setWorksJsonData(defaultWorks)
+    setIsChanged(false)
+    setSortingGUID("")
+
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    // 各チェックボックスの状態をクリア
+    checkboxes.forEach((checkbox) => {
+      if (checkbox instanceof HTMLInputElement) {
+        checkbox.checked = false;
+      }
+    });
+  }
+
   const saveArr = () => {
     invoke('get_user_document_directory').then((res) => {
       const worksPath = res as string + jsonDirectoryPath + jsonFilePath
@@ -153,6 +231,7 @@ export default function Manage() {
         const jsonRes = await invoke('read_json_file', { filePath: worksPath })
         const worksData = jsonRes as Work[]
         setWorksJsonData(worksData)
+        setDefaultWorks(worksData)
       } catch (error) {
         console.error("Error", error)
       }
@@ -168,15 +247,16 @@ export default function Manage() {
       <h1 className={styles.title}>登録作品管理</h1>
       <div className={styles.tool_bar}>
         <div>
+          <button onClick={cancelArr} className={styles.icon}><FontAwesomeIcon icon={faXmark} /></button>
           <button className={styles.icon}><FontAwesomeIcon icon={faFilter} /></button>
-          <button className={styles.icon}><FontAwesomeIcon icon={faAngleUp} /></button>
-          <button className={styles.icon}><FontAwesomeIcon icon={faAngleDown} /></button>
+          <button onClick={arrUp} className={styles.icon}><FontAwesomeIcon icon={faAngleUp} /></button>
+          <button onClick={arrDown} className={styles.icon}><FontAwesomeIcon icon={faAngleDown} /></button>
           <button onClick={saveArr}
             className={`${styles.icon} ${isChanged ? styles.active : ""}`}><FontAwesomeIcon icon={faFloppyDisk} /></button>
         </div>
         <div>
-          <button onClick={saveDirectory} className={styles.icon}><FontAwesomeIcon icon={faDownload} /></button>
-          <button className={styles.icon}><FontAwesomeIcon icon={faFileExport} /></button>
+          <button disabled onClick={saveDirectory} className={styles.icon}><FontAwesomeIcon icon={faDownload} /></button>
+          <button disabled className={styles.icon}><FontAwesomeIcon icon={faFileExport} /></button>
           {/* <button disabled className={styles.icon}><FontAwesomeIcon icon={faEyeSlash} /></button> */}
           {/* <button disabled className={styles.icon}><FontAwesomeIcon icon={faEye} /></button> */}
           <button onClick={addWorkItem} className={styles.icon}><FontAwesomeIcon icon={faPlus} /></button>
@@ -187,7 +267,7 @@ export default function Manage() {
       <div className={styles.field}>
         <div>
           {worksJsonData.map((e, i) => (
-            <div key={i}>
+            <div key={i} className={`${styles.work_div} ${sortingGUID === e.guid ? styles.sorting : ""}`}>
               <div className={styles.cbox}>
                 <input key={i}
                   onClick={
@@ -198,11 +278,12 @@ export default function Manage() {
                     }}
                   id={"checkbox" + e.guid}
                   type='checkbox'
-                  className={styles.check} />
-                <label htmlFor={"checkbox" + e.guid} className={styles.checkbox} />
+                  className={`${styles.check}`}
+                />
+                <label htmlFor={"checkbox" + e.guid} className={`${styles.checkbox}  ${sortingGUID === e.guid ? styles.sorting : ""} `} />
               </div>
               <WorkList
-              addModifyingFunction={addModifyingWork}
+                addModifyingFunction={addModifyingWork}
                 addCheckFunction={addCheckingWork}
                 removeCheckFunction={removeCheckingWork}
                 deletingFunction={deleteWork}

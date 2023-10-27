@@ -52,7 +52,7 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
       const tagString = value as string
       const tagsArray = tagString.split(",")
       const tags: Tag[] = []
-      tagsArray.map((e)=> {
+      tagsArray.map((e) => {
         const tag: Tag = {
           name: e
         }
@@ -75,7 +75,10 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
   };
 
   const handleLaunchingFileSelected = async (e: any) => {
-    open().then(files => {
+    await invoke("create_work_dir", { dirPath: workFolder }).catch((e) => console.error(e))
+    open({
+      defaultPath: workFolder
+    }).then(files => {
       if (files !== null) {
         invoke('get_user_document_directory').then((res) => {
           const workPath = res as string + jsonDirectoryPath + "\\" + work.guid
@@ -199,7 +202,7 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
           </div>
           <div>
             <span className={styles.label}>タグ</span>
-            <input name='tags' onChange={handleInputChange}  defaultValue={work.tags.map((tag) => tag.name).join(',')} placeholder='複数の場合、[,]で区切る ex) Game,Shooting' />
+            <input name='tags' onChange={handleInputChange} defaultValue={work.tags.map((tag) => tag.name).join(',')} placeholder='複数の場合、[,]で区切る ex) Game,Shooting' />
           </div>
           <div>
             <span className={styles.label}>URL</span>
