@@ -9,6 +9,7 @@ use std::io::Read;
 use std::io::{self, Write};
 use std::path::Path;
 use tauri::Manager;
+use std::env;
 use walkdir::WalkDir;
 use window_shadows::set_shadow;
 use zip::read::ZipArchive;
@@ -81,6 +82,14 @@ fn open_file(file_path: &str) -> Result<String, String> {
     let final_result: &str = &modified_string;
 
     println!("{}", final_result);
+
+    let parent_path = Path::new(file_path);
+    let parent_dir = parent_path.parent().unwrap();
+    if let Err(err) = env::set_current_dir(parent_dir) {
+        eprintln!("ディレクトリに移動できませんでした: {}", err);
+    } else {
+        println!("ディレクトリに移動しました: {:?}", parent_dir);
+    }
 
     // let result = std::process::Command::new("cmd")
     //     .args(&["/C", final_result])
