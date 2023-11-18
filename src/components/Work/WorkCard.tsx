@@ -1,10 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import styles from '@/styles/components/WorkCard.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCalendarDays } from '@fortawesome/free-solid-svg-icons'
 import { invoke } from '@tauri-apps/api/tauri'
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import { jsonDirectoryPath, jsonFilePath } from '@/components/Global/constants'
@@ -58,7 +59,8 @@ export default function WorkCard({ workData }: Props) {
     <div>
       <Link href={"/works/d?id=" + workData.guid} className={styles.link}>
         <div className={styles.card}>
-          <div className={styles.author}><FontAwesomeIcon icon={faUser} className={styles.icon} />{workData.author}</div>
+          {workData.author ? <div className={styles.author}><FontAwesomeIcon icon={faUser} className={styles.icon} />{workData.author}</div> : <></>}
+          {workData.year ?<div className={styles.year}><FontAwesomeIcon icon={faCalendarDays} className={styles.icon} />{workData.year}</div> : <></>}
           <div onClick={launchWork} className={styles.click}>Quick Launch</div>
           <div className={styles.thumbnail}>
             {workData.thumbnail !== "" ?

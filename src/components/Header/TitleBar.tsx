@@ -1,19 +1,22 @@
-'use client'
+/* eslint-disable @next/next/no-img-element */
+"use client";
 
-import { X, Minus, Maximize, AlignHorizontalJustifyCenter } from 'lucide-react'
-import * as React from 'react'
-import styles from '@/styles/components/TitleBar.module.scss'
-import { useAppWindow, useMaximized } from '@/lib/hooks'
+import { X, Minus, Maximize, AlignHorizontalJustifyCenter } from "lucide-react";
+import * as React from "react";
+import styles from "@/styles/components/TitleBar.module.scss";
+import { useAppWindow, useMaximized } from "@/lib/hooks";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faSun } from "@fortawesome/free-solid-svg-icons";
 
 export default function TitleBar() {
-  const appWindow = useAppWindow()
-  const maximized = useMaximized()
+  const appWindow = useAppWindow();
+  const maximized = useMaximized();
 
   return (
     <header>
       <nav data-tauri-drag-region className={styles.nav} aria-label="Global">
         <div className={styles.app_icon}>
-          <img src="/d3bu_icon.png" />
+          <img src="/d3bu_icon.png" alt="d3bu icon" />
         </div>
         <ul className={styles.icons}>
           <li>
@@ -22,7 +25,11 @@ export default function TitleBar() {
             </button>
           </li>
           <li>
-            <button onClick={() => maximized ? appWindow?.unmaximize() : appWindow?.maximize()}>
+            <button
+              onClick={() =>
+                maximized ? appWindow?.unmaximize() : appWindow?.maximize()
+              }
+            >
               <Maximize size="16" />
             </button>
           </li>
@@ -34,5 +41,5 @@ export default function TitleBar() {
         </ul>
       </nav>
     </header>
-  )
+  );
 }

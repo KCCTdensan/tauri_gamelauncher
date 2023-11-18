@@ -16,6 +16,7 @@ export default function Manage() {
   const [checkingWorks, setCheckingWorks] = useState<string[]>([])
   const [sortingGUID, setSortingGUID] = useState<string>("")
   const [defaultWorks, setDefaultWorks] = useState<Work[]>([])
+  const currentYear = new Date().getFullYear()
   const defWork: Work = {
     name: "(タイトル未設定)",
     author: "(制作者未設定)",
@@ -25,7 +26,9 @@ export default function Manage() {
     guid: "",
     url: "",
     pics: [],
-    tags: []
+    tags: [],
+    year: currentYear,
+    visible: true
   }
 
   const saveDirectory = async () => {
@@ -201,6 +204,13 @@ export default function Manage() {
   }
 
   const saveArr = () => {
+    const res = worksJsonData
+    res.forEach((v) => {
+      if (typeof v.visible === 'undefined') {
+        v.visible = true
+      }
+    })
+
     invoke('get_user_document_directory').then((res) => {
       const worksPath = res as string + jsonDirectoryPath + jsonFilePath
 

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useSearchParams } from "next/navigation";
@@ -53,7 +54,7 @@ export default function Work() {
     }
 
     setup()
-  }, [])
+  }, [searchParams])
 
   console.log("PATH:" + workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + workJson?.thumbnail)
   // console.log(workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + e)
@@ -96,14 +97,15 @@ export default function Work() {
         <div className={styles.pics}>
           {
             workJson?.pics ?
-            workJson?.pics.map((e, i) => (
-              <div key={i} className={styles.pic}>
-                <img
-                  src={convertFileSrc(
-                    workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + e.path
-                  )} ></img>
-              </div>
-            ) ): <></>
+              workJson?.pics.map((e, i) => (
+                <div key={i} className={styles.pic}>
+                  <img
+                    alt="pics"
+                    src={convertFileSrc(
+                      workFolder as string + jsonDirectoryPath + "\\" + workJson?.guid + e.path
+                    )} ></img>
+                </div>
+              )) : <></>
           }
         </div>
       </div>

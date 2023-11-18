@@ -3,8 +3,8 @@
 
 .tab {
   display: flex;
-  position: fixed;
-  top: calc(20px + 9rem);
+  position: sticky;
+  top: 4.5rem;
   left: 2.5%;
   justify-content: space-between;
   width: 95%;
@@ -23,10 +23,125 @@
     padding: .3rem .8rem;
     box-shadow: none;
     transition: all .15s;
+    height: 2rem;
+    z-index: 1100;
 
     &:hover {
       box-shadow: .2rem .2rem .5rem rgb(224, 224, 224);
     }
+  }
+
+  .tag_list {
+    &.open {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    user-select: none;
+    padding: 2.5rem 1rem 1rem 1rem;
+    display: none;
+    width: 30%;
+    height: auto;
+    background-color: rgb(248, 248, 248);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    border-style: solid;
+    border-color: rgb(9, 180, 163);
+    border-width: .15rem;
+    border-radius: 1rem .2rem .2rem .2rem;
+    box-shadow: .2rem .2rem .5rem rgb(224, 224, 224);
+
+    .border {
+      width: 100%;
+      height: 0rem;
+      margin: .5rem 0;
+      border-style: solid;
+      border-width: 0 0 .1rem 0;
+      border-color: rgb(9, 180, 163);
+    }
+
+    .tag_div {
+      display: block;
+      cursor: pointer;
+      pointer-events: none;
+      margin-bottom: .2rem;
+
+      .reset_tags {
+        pointer-events: all;
+        padding: .3rem .7rem;
+        background-color: rgb(9, 180, 163);
+        border-style: solid;
+        border-color: rgb(9, 180, 163);
+        border-width: .15rem;
+        border-radius: .3rem;
+        color: white;
+        margin: 0 1rem .1rem 0;
+        position: relative;
+        left: -.3rem;
+        appearance: none;
+        -webkit-appearance: none;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all .1s;
+        font-weight: bold;
+
+        &:hover,
+        &:focus {
+          background-color: rgb(9, 180, 163);
+        }
+      }
+
+      .check {
+        display: none;
+
+        &:checked+.check_string::before {
+          background-color: rgb(9, 180, 163);
+          content: "#";
+          color: white;
+          font-weight: bold;
+        }
+      }
+
+      .check_string {
+        font-size: 1.1rem;
+        margin: 0 1rem 0 1.3rem;
+        position: relative;
+        line-height: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        pointer-events: all;
+
+        &:hover::before,
+        &:focus::before {
+          outline-color: rgb(9, 180, 163);
+        }
+
+        &::before {
+          font-weight: bold;
+          display: block;
+          position: absolute;
+          background-color: white;
+          content: "#";
+          color: rgb(9, 180, 163);
+          transition: all .1s;
+          top: .15rem;
+          left: -1.6rem;
+          width: 1.0rem;
+          height: 1.2rem;
+          padding-left: .2rem;
+          line-height: 1.31rem;
+          z-index: 95;
+          border: .1rem rgb(9, 180, 163) solid;
+          border-radius: .15rem;
+          outline-style: solid;
+          outline-width: .15rem;
+          outline-color: transparent;
+        }
+      }
+    }
+
   }
 }
 
@@ -35,6 +150,7 @@
   width: 95%;
   margin: 0 auto;
   margin-top: 5rem;
+  margin-bottom: 2rem;
   border-style: solid;
   border-width: 0 0 .15rem 0;
   border-color: rgb(9, 180, 163);

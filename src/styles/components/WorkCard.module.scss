@@ -24,6 +24,28 @@
       border-color: rgb(9, 180, 163);
     }
 
+    .year {
+      position: absolute;
+      color: white;
+      font-weight: bold;
+      padding: .15rem .3rem;
+      top: 1rem;
+      left: .5rem;
+      font-size: 1.1rem;
+      background-color: rgb(9, 180, 163);
+      border-radius: .2rem;
+      border-style: solid;
+      border-width: .1rem;
+      border-color: white;
+
+      .icon {
+        width: 1.1rem;
+        height: 1.1rem;
+        font-size: 1rem;
+        margin-right: .2rem;
+      }
+    }
+
     .author {
       position: absolute;
       color: white;

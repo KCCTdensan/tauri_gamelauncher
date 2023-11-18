@@ -1,10 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import styles from '@/styles/components/WorkItem.module.scss'
 import React, { useState, useEffect } from 'react'
 import { invoke } from '@tauri-apps/api/tauri'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashCan, faPencil } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan, faPencil, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { open } from '@tauri-apps/api/dialog'
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 import { jsonDirectoryPath, jsonFilePath } from '@/components/Global/constants'
@@ -30,6 +31,10 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
   // const workFolder: unknown = invoke('get_user_document_directory') 
   // console.log("WORK"+workFolder as string)
 
+  if (typeof currentWork.visible === 'undefined') {
+    setCurrentWork({ ...currentWork, visible: true })
+  }
+
   useEffect(() => {
     const setup = async () => {
       try {
@@ -42,7 +47,7 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
     }
 
     setup()
-  }, [work.guid])
+  }, [work.guid, currentWork, work.visible])
 
   const handleInputChange = async (e: any) => {
     const { name, value } = e.target;
@@ -150,30 +155,16 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
 
     }).then(() => {
       setCurrentWork({ ...currentWork, pics: pics });
-      // console.log("Yahoooooo")
     })
   }
 
-  // const checkingWorkExecute = (e: any) => {
-
-  //   const newState = !isChecked
-
-  //   if (newState) {
-  //     addCheckFunction(work.guid)
-  //   }else {
-  //     removeCheckFunction(work.guid)
-  //   }
-
-  //   setIsChecked(newState)
-  // }
-
-  // console.log(currentWork)
-  // if (currentWork.pics[0])
-  //   console.log(workFolder as string + currentWork.pics[0].path)
-
   return (
     <div className={`${styles.box} ${isModifying ? styles.expanded : ''}`}>
-      <div className={styles.eye}></div>
+      <div className={styles.eye}>{
+        work.visible || typeof work.visible === 'undefined' ?
+        <FontAwesomeIcon icon={faEye} /> :
+        <FontAwesomeIcon icon={faEyeSlash} />
+      }</div>
       <div className={styles.id_box}>{work.guid}</div>
       <div className={styles.title}>{work.name}</div>
       <div className={styles.author}>{work.author}</div>
@@ -188,6 +179,13 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
         onClick={() => { setIsModifying(false); deletingFunction(work.guid); }}><FontAwesomeIcon icon={faTrashCan} /></div>
       {isModifying ? (
         <div className={styles.modify_field}>
+          <div className={styles.visible}><button
+            onClick={() => { setCurrentWork({ ...currentWork, visible: !currentWork.visible }); }}
+            className={styles.toggle}>{
+              currentWork.visible ?
+                <FontAwesomeIcon icon={faEye} /> :
+                <FontAwesomeIcon icon={faEyeSlash} />}
+          </button></div>
           <div>
             <span className={styles.label}>名前</span>
             <input name='name' onChange={handleInputChange} defaultValue={work.name} />
@@ -207,6 +205,10 @@ export default function WorkList({ work, updatingFunction, deletingFunction, add
           <div>
             <span className={styles.label}>URL</span>
             <input name='url' onChange={handleInputChange} defaultValue={work.url} placeholder='https://example.com' />
+          </div>
+          <div>
+            <span className={styles.label}>作成年</span>
+            <input name='year' onChange={handleInputChange} defaultValue={work.year} placeholder='半角数字' />
           </div>
           <div>
             <span className={styles.label}>zip/file</span>

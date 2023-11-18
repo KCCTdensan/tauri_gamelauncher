@@ -1,15 +1,13 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use chrono::{Local, Datelike};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::fs;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::Read;
-use std::io::{self, Write};
+use std::env;
+use std::fs::{self, File};
+use std::io::{self, BufReader, Read, Write};
 use std::path::Path;
 use tauri::Manager;
-use std::env;
 use walkdir::WalkDir;
 use window_shadows::set_shadow;
 use zip::read::ZipArchive;
@@ -30,6 +28,8 @@ struct MyData {
     target_file: String,
     thumbnail: String,
     url: String,
+    year: i32,
+    visible: bool,
 }
 
 #[tauri::command]
@@ -43,17 +43,22 @@ fn initialize_json(dir_path: &str, file_name: &str) -> Result<(), String> {
         fs::create_dir_all(directory_path).expect("Failed to create directory");
     }
 
+    let dt: chrono::DateTime<Local> = Local::now();
+    let year: i32 = dt.year();
+
     if !fs::metadata(&file_path).is_ok() {
         let data = vec![MyData {
             author: "d3bu".to_string(),
             description: "作品説明".to_string(),
             guid: "00000000-0000-0000-0000-000000000000".to_string(),
-            name: "作品名".to_string(),
+            name: "作品名\n\nこれはデフォルト配置です。".to_string(),
             pics: Vec::new(),
             tags: Vec::new(),
             target_file: "".to_string(),
             thumbnail: "".to_string(),
             url: "https://d3bu.net".to_string(),
+            year: year,
+            visible: true
         }];
 
         // データをJSONにシリアライズ

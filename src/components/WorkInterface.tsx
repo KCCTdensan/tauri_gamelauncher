@@ -14,6 +14,8 @@ export default interface Work {
   targetFile: string,
   guid: string,
   url: string,
-  pics: Pic[]
-  tags: Tag[]
+  pics: Pic[],
+  tags: Tag[],
+  year: number,
+  visible: boolean
 }

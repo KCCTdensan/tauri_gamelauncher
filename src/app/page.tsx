@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import Image from 'next/image'
@@ -19,7 +20,9 @@ export default function Home() {
     guid: "string",
     url: "string",
     pics: [],
-    tags: []
+    tags: [],
+    year: 1900,
+    visible: true
   });
   // setRandomData(works[Math.floor(Math.random() * works.length)])
   // setRandomData(works[Math.floor(Math.random() * works.length)])
